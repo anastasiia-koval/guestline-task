@@ -1,3 +1,4 @@
+@import "../../sharedStyles/_sharedStyles";
 .filterContainer {
   display: flex;
   align-items: center;
@@ -15,5 +16,11 @@
   .buttonGroup {
     display: flex;
     align-items: center;
+  }
+}
+@media screen and (max-width: $mobile-width) {
+  .filterContainer {
+    display: flex;
+    flex-direction: column;
   }
 }

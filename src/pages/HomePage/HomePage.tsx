@@ -2,26 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Filter, HotelCard } from "../../components";
 import "./HomePage.scss";
-
-export interface HotelProps {
-  id: string;
-  name: string;
-  images: Array<ImageProps>;
-  address1: string;
-  address2: string;
-  starRating: string;
-  rooms: Array<any>;
-  occupancy: OccupancyProps;
-}
-
-export interface ImageProps {
-  url: string;
-}
-
-export interface OccupancyProps {
-  maxAdults: number;
-  maxChildren: number;
-}
+import { HotelProps } from "../../interface/HotelInterface";
 
 const HomePage = () => {
   const [hotelData, setHotelData] = useState<Array<HotelProps>>();
@@ -57,18 +38,29 @@ const HomePage = () => {
       ? hotelData?.filter((hotel) => hotelRate <= Number(hotel.starRating))
       : hotelData;
 
-  const filteredByCapacityHotels =
-    (maxAdult && maxAdult > 0) || (maxChildren && maxChildren > 0)
-      ? filteredbyRateHotels?.filter(
-          (hotel) =>
-            maxAdult &&
-            maxAdult <= hotel.occupancy.maxAdults &&
-            maxChildren &&
-            maxChildren <= hotel.occupancy.maxChildren
-        )
-      : filteredbyRateHotels;
+  const filteredByHotelCapacity = filteredbyRateHotels
+    ?.map(({ rooms, ...others }) => {
+      const filteredRooms = rooms.filter(
+        (room) =>
+          maxAdult <= room.occupancy.maxAdults &&
+          maxChildren <= room.occupancy.maxChildren
+      );
+      return { rooms: filteredRooms, ...others };
+    })
+    .filter((hotel) =>
+      hotel.rooms.some(
+        (room) =>
+          maxAdult <= room.occupancy.maxAdults &&
+          maxChildren <= room.occupancy.maxChildren
+      )
+    );
 
-  const resetFilter = () => {};
+  const resetFilter = () => {
+    setHotelRate(0);
+    setChildrenAmount(0);
+    setAdultAmount(0);
+  };
+
   return (
     <>
       <header>
@@ -77,11 +69,19 @@ const HomePage = () => {
           style={{ objectFit: "cover", width: "100%", height: "300px" }}
           alt="mainPhoto"
         />
-        <Filter setHotelRate={setHotelRate} hotelRate={hotelRate} />
+        <Filter
+          setHotelRate={setHotelRate}
+          hotelRate={hotelRate}
+          maxChildren={maxChildren}
+          setChildrenAmount={setChildrenAmount}
+          setAdultAmount={setAdultAmount}
+          maxAdult={maxAdult}
+          reset={resetFilter}
+        />
       </header>
 
       <div className="cardsContainer">
-        {filteredByCapacityHotels?.map((hotel) => {
+        {filteredByHotelCapacity?.map((hotel) => {
           return (
             <HotelCard
               key={hotel.id}
