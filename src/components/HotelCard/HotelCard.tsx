@@ -3,12 +3,10 @@ import Typography from "@mui/material/Typography";
 import Rating from "@mui/material/Rating";
 import RoomCard from "./RoomCard/RoomCard";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
-import { HotelProps } from "../../pages/HomePage/HomePage";
+import { HotelProps } from "../../interface/HotelInterface";
 import ImageCarousel from "../ImageCarousel/ImageCarousel";
 
-type HotelCardInterface = Omit<HotelProps, "occupancy">;
-
-const HotelCard = (props: HotelCardInterface) => {
+const HotelCard = (props: HotelProps) => {
   return (
     <div className="card">
       <div className="hotelDetails">
