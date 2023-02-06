@@ -1,0 +1,17 @@
+.roomCard {
+  display: flex;
+  border-top: 1px solid #e7e7e7;
+  padding: 20px;
+  gap: 20px;
+
+  .roomDetails {
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+    width: 30%;
+  }
+  .description {
+    text-align: start;
+    width: 70%;
+  }
+}
