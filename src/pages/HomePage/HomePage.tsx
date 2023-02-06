@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import { Filter, HotelCard } from "../../components";
 import "./HomePage.scss";
 import { HotelProps } from "../../interface/HotelInterface";
+import { Typography } from "@mui/material";
+import CircularProgress from "@mui/material/CircularProgress";
 
 const HomePage = () => {
   const [hotelData, setHotelData] = useState<Array<HotelProps>>();
@@ -10,7 +12,6 @@ const HomePage = () => {
   const [maxChildren, setChildrenAmount] = useState<number>(0);
   const [maxAdult, setAdultAmount] = useState<number>(0);
 
-  console.log(hotelData);
   useEffect(() => {
     getAllHotels();
   }, []);
@@ -61,6 +62,13 @@ const HomePage = () => {
     setAdultAmount(0);
   };
 
+  if (!hotelData) {
+    return (
+      <div className="homePage">
+        <CircularProgress />
+      </div>
+    );
+  }
   return (
     <>
       <header>
@@ -81,20 +89,26 @@ const HomePage = () => {
       </header>
 
       <div className="cardsContainer">
-        {filteredByHotelCapacity?.map((hotel) => {
-          return (
-            <HotelCard
-              key={hotel.id}
-              id={hotel.id}
-              name={hotel.name}
-              images={hotel.images}
-              address1={hotel.address1}
-              address2={hotel.address2}
-              starRating={hotel.starRating}
-              rooms={hotel.rooms}
-            />
-          );
-        })}
+        {filteredByHotelCapacity && filteredByHotelCapacity?.length > 0 ? (
+          filteredByHotelCapacity?.map((hotel) => {
+            return (
+              <HotelCard
+                key={hotel.id}
+                id={hotel.id}
+                name={hotel.name}
+                images={hotel.images}
+                address1={hotel.address1}
+                address2={hotel.address2}
+                starRating={hotel.starRating}
+                rooms={hotel.rooms}
+              />
+            );
+          })
+        ) : (
+          <Typography variant="h6">
+            Ooops, there is no hotels with such requirements :(
+          </Typography>
+        )}
       </div>
     </>
   );
